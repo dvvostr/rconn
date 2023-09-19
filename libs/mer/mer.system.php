@@ -243,11 +243,6 @@ class IntValue{
 }
 /****************************************/
 
-
-/*--------------------------------------*/
-/* 			TODO				*/
-/*--------------------------------------*/
-
 function buildTree(array $list) {
 	$ret = array();
 	$nodes = array();
@@ -261,50 +256,6 @@ function buildTree(array $list) {
 	}
   return $ret;
 }
-/****************************************/
-function fixTreeB(array $values, $level = 0) {
-	$ret = array();
-	$newlevel = $level + 1;
-	foreach ($values as $id => $item) {
-		$nodes = fixTreeB($item["nodes"]);
-		$data = array("dataIndex" => $item["dataIndex"], "PARENT" => $item["PARENT"], "text" => $item["text"], "level" => $newlevel, "chields" => count($nodes));
-		if (count($nodes) > 0){
-			$data["nodes"] = fixTreeB($item["nodes"], $newlevel);
-		}
-		
-		$ret[] = $data;
-	}
-	return $ret;
-}
-/****************************************/
-function buildTreeB(array $dataset) {
-    $tree = array();
-    $references = array();
-    foreach ($dataset as $id => &$node) {
-        $references[$node['dataIndex']] = &$node;
-        $node['nodes'] = array();
-        if (strlen($node['PARENT']) == 0) {
-            $tree[$node['dataIndex']] = &$node;
-        } else {
-            $references[$node['PARENT']]['nodes'][$node['dataIndex']] = &$node;
-        }
-    }
-    return fixTreeB($tree);
-}
-/****************************************/
-function getParamsValue( $name, $params ){
-	$farray = array();
-	$farray = array_filter($params, function ($element) use ($name) {
-		return (strtoupper($element["name"]) == strtoupper($name));
-	});
-	if (count($farray) >= 1){
-		$keys = array_keys($farray);
-		return $farray[$keys[0]]["value"];
-	} else {
-		return "";
-	}
-}
-/****************************************/
 function getGUID(){
     if (function_exists('com_create_guid')){
         return com_create_guid();
@@ -323,113 +274,5 @@ function getGUID(){
     }
 }
 /****************************************/
-function getListDataTranformA($values, $sender, $type = 0){
-	$data = array();
-		if (true){
-		foreach ($values as $key1 => $value1){
-			if (array_key_exists("0", $value1) && count($value1[0]) > 1){
-				foreach ($value1 as $key2 => $value2){
-					if ($sender == "collection"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_4"]." - ".$value2["field_2"]);
-					} else if ($sender == "stock" || $sender == "incomeplace"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]." - ".$value2["field_2"]);
-					} else if ($sender == "article"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_2"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_2"]." - ".$value2["field_3"]);
-					} else if ($sender == "product"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_2"]." - ".$value2["field_3"]);
-					} else if ($sender == "tmgroup"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_3"]);
-						if ((!isset($value2["field_1"]) && !isset($value2["field_2"])) || ($value2["field_1"] == "" && $value2["field_2"]))
-							$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_3"]." - ".$value2["field_4"]);
-						else
-							$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]." - ".$value2["field_2"]." -> ".$value2["field_3"]." - ".$value2["field_4"]);
-					} else if ($sender == "producer-child"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_3"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_3"]." - ".$value2["field_4"]);
-					} else {
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]);
-						$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_2"]);
-					}
-					$data[] = array( "ID" => $name, "NAME" => $name, "DESC" => $desc );
-				}
-			} else{
-				if ($sender == "collection"){
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_4"]." - ".$value1["field_2"]);
-				} else if (($sender == "stock" && $type == 1) || $sender == "stock" || $sender == "incomeplace"){
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]." - ".$value1["field_2"]);
-				} else if ($sender == "article"){
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_2"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_2"]." - ".$value1["field_3"]);
-				} else if ($sender == "product"){
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_2"]." - ".$value1["field_3"]);
-				} else if ($sender == "tmgroup"){
-						$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_3"]);
-						if ((!isset($value1["field_1"]) && !isset($value1["field_2"])) || ($value1["field_1"] == "" && $value1["field_2"] == ""))
-							$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_3"]." - ".$value1["field_4"]);
-						else
-							$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]." - ".$value1["field_2"]." -> ".$value1["field_3"]." - ".$value1["field_4"]);
-				} else if ($sender == "producer-child"){
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_3"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_3"]." - ".$value1["field_4"]);
-				} else {
-					$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]);
-					$desc = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_2"]);
-				}
-				$data[] = array( "ID" => $name, "NAME" => $name, "DESC" => $desc );
 
-			}
-		}
-	}
-	return $data;
-}
-/**************************************/
-function getListDataTranformB($values){
-	$data = array();
-	if (count($values[0]) > 1){
-		foreach ($values as $key1 => $value){
-				$data[] = $value;
-		}
-	}else{
-		$data[] = $values;
-	}
-	return $data;
-}
-/**************************************/
-function getTreeDataTranformA($values, $sender){
-	$data = array();
-	foreach ($values as $key1 => $value1){
-		if (count($value1[0]) > 1){
-		foreach ($value1 as $key2 => $value2){
-				$code = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_3"]);
-				$parent = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_1"]);
-				$name = iconv(DEFAULT_CHARSET, 'cp1251', $value2["field_4"]);
-				if (strlen($name) == 0)
-					$name = $value2["field_4"];
-				if ($sender == "collection")
-					$data[] = array( "dataIndex" => $code, "PARENT" => $parent, "text" => $name, "name" => $name );
-				else
-					$data[] = array( "dataIndex" => $code, "PARENT" => $parent, "text" => $code." - ".$name, "name" => $name );
-			}
-		} else{
-				$code = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_3"]);
-				$parent = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_1"]);
-				$name = iconv(DEFAULT_CHARSET, 'cp1251', $value1["field_4"]);
-				if (strlen($name) == 0)
-					$name = $value1["field_4"];
-				if ($sender == "collection")
-					$data[] = array( "dataIndex" => $code, "PARENT" => $parent, "text" => $name, "name" => $name );
-				else
-					$data[] = array( "dataIndex" => $code, "PARENT" => $parent, "text" => $code." - ".$name, "name" => $name );
-		}
-	}
-	return $data;
-}
-/**************************************/
 ?>
